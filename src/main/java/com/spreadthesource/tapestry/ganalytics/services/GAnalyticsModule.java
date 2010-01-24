@@ -1,6 +1,5 @@
 package com.spreadthesource.tapestry.ganalytics.services;
 
-import org.apache.tapestry5.MarkupWriter;
 import org.apache.tapestry5.SymbolConstants;
 import org.apache.tapestry5.ioc.MappedConfiguration;
 import org.apache.tapestry5.ioc.OrderedConfiguration;
@@ -9,15 +8,13 @@ import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.ioc.annotations.Symbol;
 import org.apache.tapestry5.services.ClientInfrastructure;
 import org.apache.tapestry5.services.Environment;
-import org.apache.tapestry5.services.MarkupRenderer;
 import org.apache.tapestry5.services.MarkupRendererFilter;
 
 import com.spreadthesource.tapestry.ganalytics.GAnalyticsConstants;
-import com.spreadthesource.tapestry.ganalytics.services.impl.GAnalyticsScriptsInjectorImpl;
 
 public class GAnalyticsModule {
 	public static void bind(ServiceBinder binder) {
-		binder.bind(GAnalyticsScriptsInjector.class, GAnalyticsScriptsInjectorImpl.class);
+		binder.bind(GAnalyticsScriptsInjector.class, GAnalyticsScriptsInjector.class);
 	}
 
 	public static void contributeFactoryDefaults(MappedConfiguration<String, String> configuration) {
@@ -29,15 +26,7 @@ public class GAnalyticsModule {
 			final ClientInfrastructure clientInfrastructure) {
 
 		if (productionMode) {
-			MarkupRendererFilter injectGAnalyticsScript = new MarkupRendererFilter() {
-				public void renderMarkup(MarkupWriter writer, MarkupRenderer renderer) {
-					renderer.renderMarkup(writer);
-
-					scriptInjector.addScript(writer.getDocument());
-				}
-			};
-
-			configuration.add("GAnalyticsScript", injectGAnalyticsScript, "after:RenderSupport");
+			configuration.addInstance("GAnalyticsScript", GAnalyticsScriptsInjector.class, "after:RenderSupport");
 		}
 
 	}
